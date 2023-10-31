@@ -1,0 +1,9 @@
+version: '3'
+services:
+  web:
+    image: nextauth # Set your desired image name
+    build:
+      context: .
+      dockerfile: Dockerfile  # Use the Dockerfile you provided
+    ports:
+      - "3004:3004"  # Map container port 3000 to host port 3000
