@@ -6,7 +6,10 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./vitejs/dist:/usr/share/nginx/html 
+      - ./linleasing/dist:/usr/share/nginx/html/linleasing
+      - ./web-page/dist:/usr/share/nginx/html/web-page
+      - ./linleasing-reg/dist:/usr/share/nginx/html/linleasing-reg
+      # - ./index/dist:/usr/share/nginx/html 
   nextauth:
     image: nextauth
     build: 
@@ -14,6 +17,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3004" 
+  # linleasing:
+  #   image: linleasing
+  #   build:
+  #     context: ./vitejs
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8081:80"
+    
   # app6:
   #   image: app6
   #   build: 
