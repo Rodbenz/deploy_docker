@@ -1,66 +1,37 @@
 version: '3'
 services:
-  backend_app3:
-    image: backend_app3
-    build: 
-      context: ../../Backend_TRDAPP3
-      dockerfile: Dockerfile
-    ports:
-      - "8003:8003"
-    networks:
-      - backend
-  backend_app4:
-    image: backend_app4  
-    build: 
-      context: ../../Backend_TRDAPP4
-      dockerfile: Dockerfile
-    ports:
-      - "8004:8004"
-    networks:
-      - backend 
-  backend_app6:
-    image: backend_app6  
-    build: 
-      context: ../../Backend_TRDAPP6
-      dockerfile: Dockerfile
-    ports:
-      - "8006:8006"
-    networks:
-      - backend 
-  backend_app7:
-    image: backend_app7  
-    build: 
-      context: ../../Backend_TRDAPP7
-      dockerfile: Dockerfile
-    ports:
-      - "8007:8007"
-    networks:
-      - backend 
-  upload_image:
-    image: upload_image
-    ports:
-      - "9001:9001"
-    volumes:
-      - ../../Backend_TRD_UPLOAD_IMAGES/upload:/app/upload
-    networks:
-      - backend 
-  backend_airflow:
-    image: backend_airflow
-    ports:
-      - "9002:9002"
-    networks:
-      - backend 
   nginx:
     image: nginx:latest
     ports:
       - "80:80"
-    networks:
-      - backend 
     volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx.conf:/etc/nginx/conf.d/default.conf  
       - ./asset:/usr/share/nginx/html/asset
-    restart: always
-
-networks:
-  backend:
-    external: true
+  callline-webhook:
+    image: callline-webhook  
+    build: 
+      context: ./callline-webhook
+      dockerfile: Dockerfile
+    ports:
+      - "9009:9009"
+  websocket-active-batch:
+    image: websocket-active-batch  
+    build: 
+      context: ./websocket-active-batch
+      dockerfile: Dockerfile
+      target: final
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+          target: /app
+    # Add any environment variables your service needs
+    environment:
+      - NODE_ENV=production
+    # Add dependencies if needed (like a database)
+    # depends_on:
+    #   - database
